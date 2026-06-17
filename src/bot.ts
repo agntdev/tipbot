@@ -103,26 +103,23 @@ export function buildBot(token: string) {
     await ctx.reply(`${count} tips served so far!`);
   });
 
+  const KNOWN_COMMANDS = ["/start", "/help", "/tip", "/count"];
+
   bot.on("message:text", async (ctx, next) => {
     if (ctx.message.text.startsWith("/")) {
-      await ctx.reply(
-        "Use /tip for a kind tip, /count to see how many tips have been served.",
-      );
+      const cmd = ctx.message.text.split(" ")[0];
+      if (!KNOWN_COMMANDS.includes(cmd)) {
+        await ctx.reply(
+          "Use /tip for a kind tip, /count to see how many tips have been served.",
+        );
+      }
       return;
     }
     await next();
   });
 
   bot.on("message:text", async (ctx) => {
-    await ctx.reply(
-      "Use /tip for a kind tip, /count to see how many tips have been served.",
-    );
-  });
-
-  bot.on("message", async (ctx) => {
-    await ctx.reply(
-      "Use /tip for a kind tip, /count to see how many tips have been served.",
-    );
+    await ctx.reply("I received your message.");
   });
 
   return bot;
