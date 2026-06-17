@@ -1,0 +1,81 @@
+[
+  {
+    "name": "/start replies with welcome and main menu",
+    "steps": [
+      {
+        "send": { "text": "/start" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Welcome to AGNTDev Bot! I am your assistant. Use the menu below to get started.",
+              "reply_markup": {
+                "inline_keyboard": [
+                  [{ "text": "Features", "callback_data": "main:features" }],
+                  [{ "text": "Help", "callback_data": "main:help" }],
+                  [{ "text": "About", "callback_data": "main:about" }]
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "main:features callback replies with feature info",
+    "steps": [
+      {
+        "send": { "callback": "main:features" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          {
+            "method": "sendMessage",
+            "payload": { "text": "Features: I can respond to commands and process messages. More features are coming soon." }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "main:help callback replies with help info",
+    "steps": [
+      {
+        "send": { "callback": "main:help" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          {
+            "method": "sendMessage",
+            "payload": { "text": "Help: Send /start to see the main menu at any time. I understand text messages and commands." }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "main:about callback replies with about info",
+    "steps": [
+      {
+        "send": { "callback": "main:about" },
+        "expect": [
+          { "method": "answerCallbackQuery" },
+          {
+            "method": "sendMessage",
+            "payload": { "text": "AGNTDev Bot — built with the AGNTDEV toolkit (grammY + Redis)." }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "bot still responds to plain text",
+    "steps": [
+      {
+        "send": { "text": "Hello bot" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "I received your message." } }
+        ]
+      }
+    ]
+  }
+]
