@@ -76,7 +76,7 @@ export function buildBot(token: string) {
   bot.command("tip", async (ctx) => {
     const store = getPersistentStore();
     try {
-      await store.incr("tip_count");
+      await store.incr("tips_served");
     } catch (err) {
       logger.error("database write error in /tip", { error: String(err) });
       await ctx.reply("Sorry — something went wrong. Try again later.");
@@ -90,7 +90,7 @@ export function buildBot(token: string) {
     const store = getPersistentStore();
     let raw: string | null;
     try {
-      raw = await store.get("tip_count");
+      raw = await store.get("tips_served");
     } catch (err) {
       logger.error("database read error in /count", { error: String(err) });
       await ctx.reply("Sorry — something went wrong. Try again later.");
