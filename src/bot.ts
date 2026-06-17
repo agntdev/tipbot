@@ -75,14 +75,27 @@ export function buildBot(token: string) {
 
   bot.command("tip", async (ctx) => {
     const store = getPersistentStore();
-    await store.incr("tip_count");
+    try {
+      await store.incr("tip_count");
+    } catch (err) {
+      logger.error("database write error in /tip", { error: String(err) });
+      await ctx.reply("Sorry — something went wrong. Try again later.");
+      return;
+    }
     const index = randomInt(0, TIPS.length);
     await ctx.reply(TIPS[index]);
   });
 
   bot.command("count", async (ctx) => {
     const store = getPersistentStore();
-    const raw = await store.get("tip_count");
+    let raw: string | null;
+    try {
+      raw = await store.get("tip_count");
+    } catch (err) {
+      logger.error("database read error in /count", { error: String(err) });
+      await ctx.reply("Sorry — something went wrong. Try again later.");
+      return;
+    }
     const count = raw ? parseInt(raw, 10) : 0;
     await ctx.reply(`${count} tips served so far!`);
   });
