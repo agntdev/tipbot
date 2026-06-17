@@ -80,7 +80,7 @@ export function buildBot(token: string) {
   bot.on("message:text", async (ctx, next) => {
     if (ctx.message.text.startsWith("/")) {
       await ctx.reply(
-        "Sorry, I don't recognize that command. Try /help to see what I can do.",
+        "Use /tip for a kind tip, /count to see how many tips have been served.",
       );
       return;
     }
@@ -88,7 +88,9 @@ export function buildBot(token: string) {
   });
 
   bot.on("message:text", async (ctx) => {
-    await ctx.reply("I received your message.");
+    await ctx.reply(
+      "Use /tip for a kind tip, /count to see how many tips have been served.",
+    );
   });
 
   bot.catch(async (err) => {
