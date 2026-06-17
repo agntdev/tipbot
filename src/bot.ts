@@ -122,5 +122,11 @@ export function buildBot(token: string) {
     await ctx.reply("I received your message.");
   });
 
+  bot.on("message:photo", async (ctx) => {
+    await ctx.reply(
+      "Use /tip for a kind tip, /count to see how many tips have been served.",
+    );
+  });
+
   return bot;
 }
