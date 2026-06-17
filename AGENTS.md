@@ -7,13 +7,13 @@ a time so it passes the Tests-gate and merges.
 ```bash
 npm install
 npm run build     # tsc -p tsconfig.json → dist/
-npm start         # node dist/index.js (needs BOT_TOKEN)
+npm start         # node dist/index.js (needs TELEGRAM_BOT_TOKEN)
 ```
 
 ## Structure (extend these — do not rearchitect)
 - `src/bot.ts` — `buildBot(token)`: assembles the bot + registers handlers, does
   NOT start it. **Add new commands and flows here.**
-- `src/index.ts` — runtime entry (reads `BOT_TOKEN`, starts the bot).
+- `src/index.ts` — runtime entry (reads `TELEGRAM_BOT_TOKEN`, starts the bot).
 - `src/harness-entry.ts` — exports `makeBot()` for the Tests-gate (tokenless replay).
 - `tests/specs/<slug>.json` — per-feature dialog tests (a `BotSpec` array).
 - `tests/commands/<slug>.json` — per-feature declared-command manifest (a JSON string array).
