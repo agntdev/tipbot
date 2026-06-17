@@ -119,17 +119,5 @@ export function buildBot(token: string) {
     );
   });
 
-  bot.catch(async (err) => {
-    onError(err);
-    try {
-      const ctx = (err as { ctx?: { reply?: (text: string) => Promise<unknown> } }).ctx;
-      if (ctx?.reply) {
-        await ctx.reply("Something went wrong. Please try again later.");
-      }
-    } catch {
-      // Swallow errors during error recovery to prevent cascading.
-    }
-  });
-
   return bot;
 }

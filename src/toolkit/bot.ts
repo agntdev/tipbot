@@ -44,9 +44,17 @@ export function createBot<S extends object>(
       storage: resolveSessionStorage<S>(opts.storage),
     }),
   );
-  bot.catch((err) => {
+  bot.catch(async (err) => {
     if (opts.onError) opts.onError(err);
     else console.error("[agntdev-bot] unhandled error:", err);
+    try {
+      const ctx = err.ctx as { reply?: (text: string) => Promise<unknown> } | undefined;
+      if (ctx?.reply) {
+        await ctx.reply("Something went wrong. Please try again later.");
+      }
+    } catch {
+      // Swallow errors during error recovery to prevent cascading.
+    }
   });
   return bot;
 }
