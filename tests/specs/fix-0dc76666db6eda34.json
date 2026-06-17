@@ -1,0 +1,41 @@
+[
+  {
+    "name": "bot replies to plain text with received message",
+    "steps": [
+      {
+        "send": { "text": "Hello bot" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "I received your message." } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/count returns total tips served without extra replies",
+    "steps": [
+      {
+        "send": { "text": "/count" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "0 tips served so far!" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/count reflects a tip without extra replies",
+    "steps": [
+      {
+        "send": { "text": "/tip" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      },
+      {
+        "send": { "text": "/count" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "1 tips served so far!" } }
+        ]
+      }
+    ]
+  }
+]
