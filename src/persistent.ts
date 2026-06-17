@@ -138,3 +138,7 @@ export function getPersistentStore(): PersistentStore {
   if (!_store) _store = createStore();
   return _store;
 }
+
+export function resetPersistentStore(): void {
+  _store = undefined;
+}
