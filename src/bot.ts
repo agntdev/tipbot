@@ -1,4 +1,5 @@
 import { createBot, inlineKeyboard, inlineButton } from "./toolkit/index.js";
+import { getCounter } from "./persistence.js";
 
 // The per-chat session shape (ephemeral conversation state only). Extend as the
 // bot grows. Durable domain data must NOT live here — use the toolkit's
@@ -21,6 +22,7 @@ export function buildBot(token: string) {
   bot.api.setMyCommands([
     { command: "start", description: "Start the bot" },
     { command: "help", description: "Show available commands" },
+    { command: "count", description: "Show total tips served" },
   ]);
 
   bot.command("start", async (ctx) => {
@@ -54,6 +56,11 @@ export function buildBot(token: string) {
     await ctx.reply(
       "Available commands:\n/start — Start the bot\n/help — Show this help",
     );
+  });
+
+  bot.command("count", async (ctx) => {
+    const total = await getCounter();
+    await ctx.reply(`Total tips served: ${total}`);
   });
 
   bot.on("message:text", async (ctx, next) => {
