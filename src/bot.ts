@@ -28,9 +28,10 @@ export interface Session {
  * and flows here.
  */
 export function buildBot(token: string) {
+  const onError = (err: unknown) => logger.error("unhandled bot error", { error: String(err) });
   const bot = createBot<Session>(token, {
     initial: () => ({}),
-    onError: (err) => logger.error("unhandled bot error", { error: String(err) }),
+    onError,
   });
 
   bot.api.setMyCommands([
@@ -117,6 +118,7 @@ export function buildBot(token: string) {
   });
 
   bot.catch(async (err) => {
+    onError(err);
     try {
       const ctx = (err as { ctx?: { reply?: (text: string) => Promise<unknown> } }).ctx;
       if (ctx?.reply) {
