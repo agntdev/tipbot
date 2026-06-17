@@ -5,7 +5,7 @@
       {
         "send": { "text": "/help" },
         "expect": [
-          { "method": "sendMessage", "payload": { "text": "Available commands:\n/start — Start the bot\n/help — Show this help" } }
+          { "method": "sendMessage", "payload": { "text": "Available commands:\n/start — Start the bot\n/help — Show this help\n/tip — Get a random programming tip\n/count — Show total tips served" } }
         ]
       }
     ]
@@ -16,7 +16,7 @@
       {
         "send": { "text": "/nonsense" },
         "expect": [
-          { "method": "sendMessage", "payload": { "text": "Sorry, I don't recognize that command. Try /help to see what I can do." } }
+          { "method": "sendMessage", "payload": { "text": "Use /tip for a kind tip, /count to see how many tips have been served." } }
         ]
       }
     ]
@@ -27,7 +27,7 @@
       {
         "send": { "text": "Hello there" },
         "expect": [
-          { "method": "sendMessage", "payload": { "text": "I received your message." } }
+          { "method": "sendMessage", "payload": { "text": "Use /tip for a kind tip, /count to see how many tips have been served." } }
         ]
       }
     ]
