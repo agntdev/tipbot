@@ -1,23 +1,20 @@
 import { buildBot } from "./bot.js";
+import { logger } from "./logger.js";
+import "./config.js";
 
-// Telegram bot tokens follow the pattern: <bot-id>:<35-char alphanumeric hash>
 const BOT_TOKEN_RE = /^\d{8,10}:[A-Za-z0-9_-]{35}$/;
 
-// Runtime entry (dist/index.js). BOT_TOKEN is injected at runtime as a secret.
 const token = process.env.BOT_TOKEN;
 if (!token) {
-  console.error(
-    "BOT_TOKEN is required. Set the TELEGRAM_BOT_TOKEN (or BOT_TOKEN) environment variable to your BotFather token.",
-  );
+  logger.error("BOT_TOKEN is required", { hint: "Set BOT_TOKEN to your BotFather token" });
   process.exit(1);
 }
 
 if (!BOT_TOKEN_RE.test(token.trim())) {
-  console.error(
-    "BOT_TOKEN is invalid. A valid Telegram bot token looks like 1234567890:ABCdefGHIjklMNOpqrsTUVwxyz-01234567 — obtained from @BotFather.",
-  );
+  logger.error("BOT_TOKEN is invalid", { hint: "Format: 1234567890:ABCdefGHIjklMNOpqrsTUVwxyz-01234567" });
   process.exit(1);
 }
 
+logger.info("starting bot");
 const bot = buildBot(token);
 bot.start();

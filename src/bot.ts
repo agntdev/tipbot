@@ -1,6 +1,7 @@
 import { randomInt } from "node:crypto";
 import { createBot, inlineKeyboard, inlineButton } from "./toolkit/index.js";
 import { getPersistentStore } from "./persistent.js";
+import { logger } from "./logger.js";
 
 const TIPS = [
   "Write code for humans first, computers second. Clear code beats clever code.",
@@ -29,6 +30,7 @@ export interface Session {
 export function buildBot(token: string) {
   const bot = createBot<Session>(token, {
     initial: () => ({}),
+    onError: (err) => logger.error("unhandled bot error", { error: String(err) }),
   });
 
   bot.api.setMyCommands([
@@ -94,7 +96,6 @@ export function buildBot(token: string) {
   });
 
   bot.catch(async (err) => {
-    console.error("[agntdev-bot] unhandled error:", err);
     try {
       const ctx = (err as { ctx?: { reply?: (text: string) => Promise<unknown> } }).ctx;
       if (ctx?.reply) {
