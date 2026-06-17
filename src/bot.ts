@@ -116,6 +116,13 @@ export function buildBot(token: string) {
     );
   });
 
+  bot.on("message", async (ctx) => {
+    if (ctx.message.text) return;
+    await ctx.reply(
+      "Use /tip for a kind tip, /count to see how many tips have been served.",
+    );
+  });
+
   bot.catch(async (err) => {
     try {
       const ctx = (err as { ctx?: { reply?: (text: string) => Promise<unknown> } }).ctx;
