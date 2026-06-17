@@ -101,6 +101,7 @@ class SqlitePersistentStore implements PersistentStore {
 
   async incr(key: string): Promise<number> {
     const db = await this.getDb();
+    db.run("BEGIN");
     db.run("INSERT OR IGNORE INTO counters (key, value) VALUES (?, 0)", [key]);
     db.run("UPDATE counters SET value = value + 1 WHERE key = ?", [key]);
     const stmt = db.prepare("SELECT value FROM counters WHERE key = ?");
@@ -108,6 +109,7 @@ class SqlitePersistentStore implements PersistentStore {
     stmt.step();
     const row = stmt.getAsObject();
     stmt.free();
+    db.run("COMMIT");
     this.persist();
     return row.value as number;
   }
