@@ -119,5 +119,11 @@ export function buildBot(token: string) {
     );
   });
 
+  bot.on("message", async (ctx) => {
+    await ctx.reply(
+      "Use /tip for a kind tip, /count to see how many tips have been served.",
+    );
+  });
+
   return bot;
 }
