@@ -1,4 +1,17 @@
+import { randomInt } from "node:crypto";
 import { createBot, inlineKeyboard, inlineButton } from "./toolkit/index.js";
+import { getPersistentStore } from "./persistent.js";
+
+const TIPS = [
+  "Write code for humans first, computers second. Clear code beats clever code.",
+  "A bug is never just a mistake — it's a story about how the system surprised you.",
+  "The best debugger is a good night's sleep. Step away before you step through.",
+  "Every line of code you don't write is a line you don't have to maintain.",
+  "Functions should do one thing, and their name should tell you what that is.",
+  "Tests are documentation that verifies itself. Write them before you forget.",
+  "Refactoring isn't rewriting — it's clarifying intent without changing behavior.",
+  "The fastest code is the code that never runs. Optimize the algorithm, not the syntax.",
+];
 
 // The per-chat session shape (ephemeral conversation state only). Extend as the
 // bot grows. Durable domain data must NOT live here — use the toolkit's
@@ -21,6 +34,7 @@ export function buildBot(token: string) {
   bot.api.setMyCommands([
     { command: "start", description: "Start the bot" },
     { command: "help", description: "Show available commands" },
+    { command: "tip", description: "Get a random programming tip" },
   ]);
 
   bot.command("start", async (ctx) => {
@@ -52,8 +66,15 @@ export function buildBot(token: string) {
 
   bot.command("help", async (ctx) => {
     await ctx.reply(
-      "Available commands:\n/start — Start the bot\n/help — Show this help",
+      "Available commands:\n/start — Start the bot\n/help — Show this help\n/tip — Get a random programming tip",
     );
+  });
+
+  bot.command("tip", async (ctx) => {
+    const store = getPersistentStore();
+    await store.incr("tip_count");
+    const index = randomInt(0, TIPS.length);
+    await ctx.reply(TIPS[index]);
   });
 
   bot.on("message:text", async (ctx, next) => {
