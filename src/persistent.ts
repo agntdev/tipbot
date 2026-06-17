@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { config } from "./config.js";
 
-interface PersistentStore {
+export interface PersistentStore {
   get(key: string): Promise<string | null>;
   set(key: string, value: string): Promise<void>;
   incr(key: string): Promise<number>;
@@ -37,9 +37,11 @@ class SqlitePersistentStore implements PersistentStore {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private initPromise: Promise<any> | null = null;
   private dbPath: string;
+  private persistToDisk: boolean;
 
-  constructor(dbPath: string) {
+  constructor(dbPath: string, persistToDisk = true) {
     this.dbPath = dbPath;
+    this.persistToDisk = persistToDisk;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,7 +60,7 @@ class SqlitePersistentStore implements PersistentStore {
     const SQL = await initSqlJs();
 
     let data: ArrayLike<number> | null = null;
-    if (existsSync(this.dbPath)) {
+    if (this.persistToDisk && existsSync(this.dbPath)) {
       data = new Uint8Array(readFileSync(this.dbPath));
     }
 
@@ -69,12 +71,12 @@ class SqlitePersistentStore implements PersistentStore {
     db.run("INSERT OR IGNORE INTO counters (key, value) VALUES (?, ?)", ["tips_served", 0]);
 
     this.db = db;
-    this.persist();
+    if (this.persistToDisk) this.persist();
     return db;
   }
 
   private persist(): void {
-    if (!this.db) return;
+    if (!this.db || !this.persistToDisk) return;
     const buffer = this.db.export() as Uint8Array;
     mkdirSync(dirname(this.dbPath), { recursive: true });
     writeFileSync(this.dbPath, buffer);
@@ -137,4 +139,8 @@ let _store: PersistentStore | undefined;
 export function getPersistentStore(): PersistentStore {
   if (!_store) _store = createStore();
   return _store;
+}
+
+export function createFreshPersistentStore(): PersistentStore {
+  return new SqlitePersistentStore(":memory:", false);
 }

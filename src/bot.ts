@@ -1,6 +1,6 @@
 import { randomInt } from "node:crypto";
 import { createBot, inlineKeyboard, inlineButton } from "./toolkit/index.js";
-import { getPersistentStore } from "./persistent.js";
+import { getPersistentStore, type PersistentStore } from "./persistent.js";
 import { logger } from "./logger.js";
 
 const TIPS = [
@@ -27,7 +27,8 @@ export interface Session {
  * (src/harness-entry.ts) so both exercise the exact same bot. Add new commands
  * and flows here.
  */
-export function buildBot(token: string) {
+export function buildBot(token: string, opts?: { store?: PersistentStore }) {
+  const store = opts?.store ?? getPersistentStore();
   const onError = (err: unknown) => logger.error("unhandled bot error", { error: String(err) });
   const bot = createBot<Session>(token, {
     initial: () => ({}),
@@ -77,7 +78,6 @@ export function buildBot(token: string) {
   });
 
   bot.command("tip", async (ctx) => {
-    const store = getPersistentStore();
     try {
       await store.incr("tips_served");
     } catch (err) {
@@ -90,7 +90,6 @@ export function buildBot(token: string) {
   });
 
   bot.command("count", async (ctx) => {
-    const store = getPersistentStore();
     let raw: string | null;
     try {
       raw = await store.get("tips_served");
@@ -115,7 +114,7 @@ export function buildBot(token: string) {
 
   bot.on("message:text", async (ctx) => {
     await ctx.reply(
-      "Use /tip for a kind tip, /count to see how many tips have been served.",
+      "I received your message.",
     );
   });
 
