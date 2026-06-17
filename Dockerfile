@@ -1,4 +1,4 @@
-# Runtime image for a generated AGNTDEV bot. BOT_TOKEN is injected at RUNTIME as
+# Runtime image for a generated AGNTDEV bot. TELEGRAM_BOT_TOKEN is injected at RUNTIME as
 # a secret — never baked into an image layer.
 FROM node:20-slim AS build
 WORKDIR /app
