@@ -1,0 +1,25 @@
+[
+  {
+    "name": "/count reflects tips that were served (regression for fix-087fc2f676984906)",
+    "steps": [
+      {
+        "send": { "text": "/tip" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      },
+      {
+        "send": { "text": "/tip" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      },
+      {
+        "send": { "text": "/count" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "2 tips served so far!" } }
+        ]
+      }
+    ]
+  }
+]
