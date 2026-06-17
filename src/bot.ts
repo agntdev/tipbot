@@ -39,7 +39,9 @@ export function buildBot(token: string) {
     { command: "help", description: "Show available commands" },
     { command: "tip", description: "Get a random programming tip" },
     { command: "count", description: "Show total tips served" },
-  ]);
+  ]).catch((err) => {
+    logger.error("failed to set bot commands", { error: String(err) });
+  });
 
   bot.command("start", async (ctx) => {
     const keyboard = inlineKeyboard([
