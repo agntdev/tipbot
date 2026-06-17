@@ -1,0 +1,13 @@
+[
+  {
+    "name": "/tip returns a programming tip and increments counter",
+    "steps": [
+      {
+        "send": { "text": "/tip" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      }
+    ]
+  }
+]
