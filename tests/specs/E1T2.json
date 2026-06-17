@@ -1,0 +1,30 @@
+[
+  {
+    "name": "/count returns total tips served",
+    "steps": [
+      {
+        "send": { "text": "/count" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "0 tips served so far!" } }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "/count reflects a tip that was served",
+    "steps": [
+      {
+        "send": { "text": "/tip" },
+        "expect": [
+          { "method": "sendMessage" }
+        ]
+      },
+      {
+        "send": { "text": "/count" },
+        "expect": [
+          { "method": "sendMessage", "payload": { "text": "1 tips served so far!" } }
+        ]
+      }
+    ]
+  }
+]

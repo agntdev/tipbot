@@ -37,6 +37,7 @@ export function buildBot(token: string) {
     { command: "start", description: "Start the bot" },
     { command: "help", description: "Show available commands" },
     { command: "tip", description: "Get a random programming tip" },
+    { command: "count", description: "Show total tips served" },
   ]);
 
   bot.command("start", async (ctx) => {
@@ -68,7 +69,7 @@ export function buildBot(token: string) {
 
   bot.command("help", async (ctx) => {
     await ctx.reply(
-      "Available commands:\n/start — Start the bot\n/help — Show this help\n/tip — Get a random programming tip",
+      "Available commands:\n/start — Start the bot\n/help — Show this help\n/tip — Get a random programming tip\n/count — Show total tips served",
     );
   });
 
@@ -77,6 +78,13 @@ export function buildBot(token: string) {
     await store.incr("tip_count");
     const index = randomInt(0, TIPS.length);
     await ctx.reply(TIPS[index]);
+  });
+
+  bot.command("count", async (ctx) => {
+    const store = getPersistentStore();
+    const raw = await store.get("tip_count");
+    const count = raw ? parseInt(raw, 10) : 0;
+    await ctx.reply(`${count} tips served so far!`);
   });
 
   bot.on("message:text", async (ctx, next) => {
