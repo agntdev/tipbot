@@ -1,6 +1,7 @@
 import { createRequire } from "node:module";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
+import { config } from "./config.js";
 
 interface PersistentStore {
   get(key: string): Promise<string | null>;
@@ -122,13 +123,11 @@ function createRedisClient(url: string): unknown {
 
 function createStore(env: {
   REDIS_URL?: string;
-  SQLITE_DB_PATH?: string;
 } = process.env): PersistentStore {
   if (env.REDIS_URL) {
     return new RedisPersistentStore(createRedisClient(env.REDIS_URL));
   }
-  const dbPath = env.SQLITE_DB_PATH ?? "data/tip-counter.db";
-  return new SqlitePersistentStore(dbPath);
+  return new SqlitePersistentStore(config.dbPath);
 }
 
 let _store: PersistentStore | undefined;
